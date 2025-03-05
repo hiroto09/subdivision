@@ -1,8 +1,8 @@
-
+import GeminiTest from "@/components/gemini";
 export default function Home() {
   return (
     <main>
-      a
+      <GeminiTest />
     </main>
   );
 }
