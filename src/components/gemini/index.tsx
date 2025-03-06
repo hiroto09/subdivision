@@ -9,13 +9,13 @@ export default function GeminiTest() {
 
 {
     "機能名1": [
-        {"必要処理": "処理名1"},
-        {"必要処理": "処理名2"}
+        "処理名1",
+        "処理名2"
     ],
     "機能名2": [
-        {"必要処理": "処理名3"},
-        {"必要処理": "処理名4"},
-        {"必要処理": "処理名5"}
+        "処理名3",
+        "処理名4",
+        "処理名5"
     ]
 }
 `;
@@ -38,7 +38,10 @@ export default function GeminiTest() {
   return (
     <main>
       <span>
-        <textarea value={promptText} onChange={(e) => setPromptText(e.target.value)}></textarea>
+        <textarea
+          value={promptText}
+          onChange={(e) => setPromptText(e.target.value)}
+        ></textarea>
         <button onClick={Gemini}>Generate</button>
       </span>
       <p>{geminiResponse}</p>
