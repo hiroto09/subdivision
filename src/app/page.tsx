@@ -1,8 +1,9 @@
-import GeminiTest from "@/components/gemini";
+import Main from "@/components/features/main/Main";
+
 export default function Home() {
   return (
     <main>
-      <GeminiTest />
+      <Main/>
     </main>
   );
 }
