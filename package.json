@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.22.0",
+    "@xyflow/react": "^12.4.4",
+    "jotai": "^2.12.1",
     "next": "15.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

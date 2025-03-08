@@ -1,31 +1,43 @@
 "use client";
 import { useState } from "react";
+import { useAtom } from "jotai";
 import style from "./Gemini.module.scss";
+import ResType from "@/type/ResType";
+import { resAtom } from "@/const/atoms/index";
 
 export default function Gemini() {
+  const [,setRes] = useAtom(resAtom);
   const [promptText, setPromptText] = useState<string>("");
-  const [geminiResponse, setGeminiResponse] = useState<JsonType | null>(null);
+  const prompt = `${promptText}について、アプリケーションの開発におけるロードマップを作成してください。最低限必要なアプリケーションの機能と、それに対する必要な処理を以下の形式で記述してください：
+- JSON形式で出力してください（最初に「json」とは書かないでください）。
+- '''も入らないようにしてください。
+- 各機能とその処理は、実装順に並べてください。
+- 各機能は実装のステップごとに分けて記述してください。
 
-  type JsonType = Record<string, string[]>;
-
-  const prompt = `${promptText}について最低限必要になる機能とそれに対する必要処理を実装順に記述してください。最初にjsonと書かないこと、"""で囲わないこと
-  フォーマット：
-  {
-      "機能名1": [
-          "処理名1",
-          "処理名2"
-      ],
-      "機能名2": [
-          "処理名3",
-          "処理名4",
-          "処理名5"
-      ]
+【出力フォーマット】
+{
+  "ステップ1": {
+    "機能名1": [
+      "処理名1",
+      "処理名2"
+    ],
+    "機能名2": [
+      "処理名3",
+      "処理名4"
+    ]
+  },
+  "ステップ2": {
+    "機能名3": [
+      "処理名5",
+      "処理名6"
+    ]
   }
-  `;
+}
 
-  const Gemini = async () => {
-    console.log("Gemini関数が呼び出されました");
+上記のJSONフォーマットを厳密に守り、必ずJSONのみを出力して。
+`;
 
+  const fetchRoadmap = async () => {
     try {
       const response = await fetch("/api/gemini-api", {
         method: "POST",
@@ -35,61 +47,49 @@ export default function Gemini() {
         body: JSON.stringify({ prompt_post: prompt }),
       });
 
-      console.log("レスポンス受信:", response);
-
       if (!response.ok) {
         throw new Error(`エラーが発生しました: ${response.statusText}`);
       }
 
       const data = await response.json();
-      console.log("JSONデータ:", data);
 
-      // 受け取ったデータを JsonType に変換
-      try {
-        const parsedData: JsonType = JSON.parse(data.message);
-        setGeminiResponse(parsedData);
-      } catch (error) {
-        console.error("JSONの解析に失敗しました:", error);
-        setGeminiResponse(null);
+      if (typeof data.message === "string") {
+        try {
+          const parsedData: ResType = JSON.parse(data.message);
+          setRes(parsedData);
+        } catch (error) {
+          console.error("JSONの解析に失敗しました:", error);
+          setRes(null);
+        }
+      } else {
+        console.error("APIレスポンスの形式が不正です:", data);
+        setRes(null);
       }
     } catch (error) {
-      console.error("エラー発生:", error);
+      console.error("APIリクエスト中にエラー発生:", error);
     }
   };
 
   return (
     <>
-    <div className={style.gemini}>
+      <div className={style.gemini}>
         <div className={style.generater}>
-          <form className={style.generaterContent}>
+          <form
+            className={style.generaterContent}
+            onSubmit={(e) => e.preventDefault()}
+          >
             <input
               type="text"
               value={promptText}
               onChange={(e) => setPromptText(e.target.value)}
               placeholder="アプリ名を入力"
             />
-            <button type="button" onClick={Gemini}>
+            <button type="button" onClick={fetchRoadmap}>
               ▲
             </button>
           </form>
         </div>
-    </div>
-
-      {/* 受け取ったデータをリスト表示 */}
-      {geminiResponse && (
-        <ul>
-          {Object.entries(geminiResponse).map(([feature, processes]) => (
-            <li key={feature}>
-              <strong>{feature}</strong>
-              <ul>
-                {processes.map((process, index) => (
-                  <li key={index}>{process}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      )}
+      </div>
     </>
   );
 }

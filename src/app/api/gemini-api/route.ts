@@ -8,11 +8,9 @@ export async function POST(req: Request) {
 
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContentStream(prompt_post);
-        
         // ここで待機してテキストを取り出します
         const response = await result.response;
         const responseText = await response.text(); // 非同期処理なのでawaitが必要
-
         return NextResponse.json({
             message: responseText
         });
