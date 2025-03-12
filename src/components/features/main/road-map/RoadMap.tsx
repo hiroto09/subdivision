@@ -11,7 +11,7 @@ export default function RoadMap() {
   return (
     <>
       <div className={style.roadMap}>
-          <ReactFlow nodes={Nodes} edges={Edges} nodeTypes={nodeTypes} />
+          <ReactFlow className={style.roadMapArea} nodes={Nodes} edges={Edges} nodeTypes={nodeTypes} />
       </div>
     </>
   );

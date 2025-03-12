@@ -1,7 +1,14 @@
 .roadMap{
     height: 70vh;
     width: 80vw;
+    padding:1rem;
     margin: 0 auto;
     margin-top: 2rem;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.785);
+    background-color: white;
+    border-radius: 20px;
 
+    .roadMapArea{
+        background-color: white;
+    }
 }
